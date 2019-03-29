@@ -1,12 +1,43 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const express = require('express');
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
+const mongoose = require('mongoose');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const cors = require('cors');
+//require('dotenv').config();
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const urlRouter = require('./routes/url')
 
-var app = express();
+const app = express();
+
+// enable cross site scripting from front end
+app.use(cors({
+  credentials: true,
+  origin: ['http://localhost:3000']
+}));
+
+// set up database connection
+mongoose.connect('mongodb://localhost/urlShortener', {
+  keepAlive: true,
+  useNewUrlParser: true,
+  reconnectTries: Number.MAX_VALUE
+}).then(() => {
+  console.log(`Connected to database`);
+}).catch((error) => {
+  console.error(error);
+});
+
+// create sessions and store in database
+app.use(session({
+  secret: "basic-auth-secret",
+  cookie: { maxAge: 60000 },
+  store: new MongoStore({
+    mongooseConnection: mongoose.connection,
+    ttl: 24 * 60 * 60 // 1 day
+  })
+}));
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -14,7 +45,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+// primary routing
+app.use('/', urlRouter);
 
 module.exports = app;

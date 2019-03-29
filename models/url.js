@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
 const schema = mongoose.Schema;
 
-const shortPathSchema = new schema({
-    shortPath: {type: String, required: true, unique: true},
-    destinationUrl: {type: String, required: true},
-    visited: int
+const urlSchema = new schema({
+  //TODO: create short object_id
+  destination: {type: String, required: true},
+  visited: Number
 },{
-    timestamps: { createdAt: "created_at", updatedAt: "updated_at"}
+  timestamps: { createdAt: "created_at", updatedAt: "updated_at"}
 });
 
-const ShortPath = mongoose.model("ShortPath", shortPathSchema);
+const Url = mongoose.model("Url", urlSchema);
 
-module.exports = ShortPath;
+module.exports = Url;
