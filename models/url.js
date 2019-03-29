@@ -3,6 +3,7 @@ const schema = mongoose.Schema;
 
 const urlSchema = new schema({
   //TODO: create short object_id
+  shortPath: {type: String, required: true, unique: true },
   destination: {type: String, required: true},
   visited: Number
 },{
