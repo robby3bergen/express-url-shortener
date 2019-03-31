@@ -11,7 +11,7 @@ router.post('/signup', (request, response, next) => {
   // check if username and password were entered
   if (!username || !password) {
     return response.status(422).json({
-      'Error': 'Enter a valid username and password'
+      'error': 'Enter a valid username and password'
     })
   }
 
@@ -19,8 +19,8 @@ router.post('/signup', (request, response, next) => {
   .then(user => {
     // return error if user already exists
     if (user !== null) {
-      return response.status(422).json({
-        'Error': 'Username already exists'
+      return response.json({
+        'error': 'Username already exists'
       })
     }
 
@@ -35,11 +35,11 @@ router.post('/signup', (request, response, next) => {
     return newUser.save(err => {
       if (err) {
         response.status(422).json({
-          'Error': 'Unable to store user in database'
+          'error': 'Unable to store user in database'
         })
       } else {
-        request.session.currentUser = newUser; // store user in session
-        response.status(200).json(newUser);
+        request.session.currentUser = username; // store user in session
+        response.status(200).json(username);
       }
     });
   })
@@ -53,7 +53,7 @@ router.post('/login', (request, response, next) => {
   // check if username and password were entered
   if (!username || !password) {
     return response.status(422).json({
-      'Error': 'Enter a valid username and password'
+      'error': 'Enter a valid username and password'
     })
   }
 
@@ -63,8 +63,8 @@ router.post('/login', (request, response, next) => {
     if (user) {
       // if password matches, store user in session and send response
       if (bcrypt.compareSync(password, user.password)) {
-        request.session.currentUser = user;
-        return response.status(200).json(user);
+        request.session.currentUser = username;
+        return response.status(200).json(username);
       } else {
         return response.status(401).json({'Unauthorised': 'User or password is invalid'});
       }
@@ -77,7 +77,7 @@ router.post('/login', (request, response, next) => {
 
 /* -- User-logged-in route -- */
 router.get('userloggedin', (request, response, next) => {
-  return response.status(200).json(request.sessions.currentUser);
+  return response.status(200).json(request.session.currentUser);
 })
 
 /* -- Logout route -- */
