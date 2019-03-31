@@ -8,7 +8,8 @@ const logger = require('morgan');
 const cors = require('cors');
 require('dotenv').config();
 
-const urlRouter = require('./routes/url')
+const urlRouter = require('./routes/url');
+const authRouter = require('./routes/auth');
 
 const app = express();
 
@@ -47,6 +48,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // primary routing
 app.use('/', urlRouter);
+app.use('/', authRouter);
 app.use((req, res, next) => {
   // If no routes match, send them the React HTML.
   res.sendFile(__dirname + "/public/index.html");
