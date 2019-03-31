@@ -15,7 +15,7 @@ const app = express();
 // enable cross site scripting from front end
 app.use(cors({
   credentials: true,
-  origin: ['http://localhost:3000']
+  origin: [process.env.CORS_ORIGIN_URI]
 }));
 
 // set up database connection
