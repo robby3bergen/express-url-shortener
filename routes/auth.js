@@ -64,15 +64,28 @@ router.post('/login', (request, response, next) => {
       // if password matches, store user in session and send response
       if (bcrypt.compareSync(password, user.password)) {
         request.session.currentUser = user;
-        response.status(200).json(user);
+        return response.status(200).json(user);
       } else {
-        response.status(401).json({'Unauthorised': 'User or password is invalid'});
+        return response.status(401).json({'Unauthorised': 'User or password is invalid'});
       }
     } else {
-      response.status(401).json({'Unauthorised': 'User or password is invalid'});
+      return response.status(401).json({'Unauthorised': 'User or password is invalid'});
     }
   })
   .catch(next)
+})
+
+/* -- User-logged-in route -- */
+router.get('userloggedin', (request, response, next) => {
+  return response.status(200).json(request.sessions.currentUser);
+})
+
+/* -- Logout route -- */
+router.post('/logout', (request, response, next) => {
+  request.session.currentUser = null;
+  return response.status(200).json({
+      'message': 'user has logged out'
+  })
 })
 
 module.exports = router;
