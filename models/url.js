@@ -1,9 +1,12 @@
 const mongoose = require('mongoose');
 const schema = mongoose.Schema;
+const shortid = require('shortid');
 
 const urlSchema = new schema({
-  //TODO: create short object_id
-  shortPath: {type: String, required: true, unique: true },
+  _id: {
+    type: String,
+    default: shortid.generate
+   },
   destination: {type: String, required: true},
   visited: Number
 },{

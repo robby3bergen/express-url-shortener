@@ -3,27 +3,26 @@ const router = express.Router();
 
 const Url = require('../models/url');
 
-// GET url
-router.get('/url/findbyid/:shortPath', (request, response, next) => {
-  const shortPath = request.params.shortPath;
+/* GET url */
+router.get('/url/findbyid/:id', (request, response, next) => {
+  const id = request.params.id;
 
-  Url.findOne({shortPath})
+  Url.findById(id)
   .then(url => {
     return response.status(200).json(url);
   })
   .catch(next)
 })
 
-// POST new url
+/* POST new url */
 router.post('/url/add', (request, response, next) => {
   const destination = request.body.destination;
-  //TODO: auto generate shortPath
-  const shortPath = '1a2b3c4';
 
+  //check if destination url already exists in database, else add
   Url.findOne({ destination })
   .then(url => {
     if (!url) {
-      const newUrl = new Url({destination, shortPath});
+      const newUrl = new Url({ destination });
       return newUrl.save(err => {
         if (err) {
           response.status(422).json({'error': 'something went wrong'});

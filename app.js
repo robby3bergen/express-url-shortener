@@ -6,7 +6,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
-//require('dotenv').config();
+require('dotenv').config();
 
 const urlRouter = require('./routes/url')
 
@@ -19,7 +19,7 @@ app.use(cors({
 }));
 
 // set up database connection
-mongoose.connect('mongodb://localhost/urlShortener', {
+mongoose.connect(process.env.MONGODB_URI, {
   keepAlive: true,
   useNewUrlParser: true,
   reconnectTries: Number.MAX_VALUE
@@ -47,5 +47,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // primary routing
 app.use('/', urlRouter);
+app.use((req, res, next) => {
+  // If no routes match, send them the React HTML.
+  res.sendFile(__dirname + "/public/index.html");
+});
 
 module.exports = app;
