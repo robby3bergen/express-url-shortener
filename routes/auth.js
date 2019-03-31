@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 
 const User = require('../models/user');
 
-/* -- SIGNUP ROUTE -- */
+/* -- Signup route -- */
 router.post('/signup', (request, response, next) => {
   const {username, password} = request.body;
 
@@ -44,6 +44,35 @@ router.post('/signup', (request, response, next) => {
     });
   })
   .catch(next);
+})
+
+/* -- Login route -- */
+router.post('/login', (request, response, next) => {
+  const {username, password} = request.body;
+
+  // check if username and password were entered
+  if (!username || !password) {
+    return response.status(422).json({
+      'Error': 'Enter a valid username and password'
+    })
+  }
+
+  // get user from database
+  User.findOne({username})
+  .then(user => {
+    if (user) {
+      // if password matches, store user in session and send response
+      if (bcrypt.compareSync(password, user.password)) {
+        request.session.currentUser = user;
+        response.status(200).json(user);
+      } else {
+        response.status(401).json({'Unauthorised': 'User or password is invalid'});
+      }
+    } else {
+      response.status(401).json({'Unauthorised': 'User or password is invalid'});
+    }
+  })
+  .catch(next)
 })
 
 module.exports = router;
