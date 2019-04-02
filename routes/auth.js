@@ -39,7 +39,7 @@ router.post('/signup', (request, response, next) => {
         })
       } else {
         request.session.currentUser = username; // store user in session
-        response.status(200).json(username);
+        response.status(200).json({'username': username});
       }
     });
   })
@@ -64,7 +64,7 @@ router.post('/login', (request, response, next) => {
       // if password matches, store user in session and send response
       if (bcrypt.compareSync(password, user.password)) {
         request.session.currentUser = username;
-        return response.status(200).json(username);
+        return response.status(200).json({'username': username});
       } else {
         return response.status(401).json({'Unauthorised': 'User or password is invalid'});
       }
@@ -76,14 +76,15 @@ router.post('/login', (request, response, next) => {
 })
 
 /* -- User-logged-in route -- */
-router.get('userloggedin', (request, response, next) => {
-  return response.status(200).json(request.session.currentUser);
+router.get('/userloggedin', (request, response, next) => {
+  return response.status(200).json({'username': request.session.currentUser});
 })
 
 /* -- Logout route -- */
 router.post('/logout', (request, response, next) => {
   request.session.currentUser = null;
   return response.status(200).json({
+      'username': null,
       'message': 'user has logged out'
   })
 })

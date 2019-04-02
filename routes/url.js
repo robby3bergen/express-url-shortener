@@ -3,13 +3,13 @@ const router = express.Router();
 
 const Url = require('../models/url');
 
-/* GET url */
-router.get('/url/findbyid/:id', (request, response, next) => {
+/* Redirect route */
+router.get('/:id', (request, response, next) => {
   const id = request.params.id;
 
   Url.findById(id)
   .then(url => {
-    return response.status(200).json(url);
+    return response.redirect(url.destination);
   })
   .catch(next)
 })
