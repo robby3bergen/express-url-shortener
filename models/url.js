@@ -8,6 +8,7 @@ const urlSchema = new schema({
     default: shortid.generate
    },
   destination: {type: String, required: true},
+  userId: {type: schema.Types.ObjectId, ref: 'User'},
   visited: Number
 },{
   timestamps: { createdAt: "created_at", updatedAt: "updated_at"}
