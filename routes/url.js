@@ -41,4 +41,15 @@ router.post('/url/add', (request, response, next) => {
   .catch(next)
 });
 
+/* GET url list */
+router.post('/url/list', (request, response, next) => {
+  const userId = request.body.userId;
+  
+  Url.find({ userId })
+  .then(listOfUrls => {
+    response.status(200).json(listOfUrls);
+  })
+  .catch(next)
+});
+
 module.exports = router;
