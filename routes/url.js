@@ -41,6 +41,20 @@ router.post('/url/add', (request, response, next) => {
   .catch(next)
 });
 
+/* POST delete url */
+router.post('/url/delete', (request, response, next) => {
+  // user should not be able to delete a url if not logged in
+  if (!request.session.currentUser) {
+    return response.status(401).json({'error': 'you are not authorized to delete urls'});
+  }
+
+  // delete url
+  const {urlId, userId} = request.body;
+  Url.deleteOne({ '_id': urlId, userId })
+  .then(url => response.status(200).json({'message': 'url was deleted'}))
+  .catch(next)
+});
+
 /* GET url list */
 router.post('/url/list', (request, response, next) => {
   const userId = request.body.userId;
